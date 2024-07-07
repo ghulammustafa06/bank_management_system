@@ -49,3 +49,37 @@ int main() {
         std::cout << "Enter your choice: ";
         std::cin >> choice;
 
+ switch (choice) {
+            case 1: {
+            std::string accNum, name;
+            double initialBalance;
+            std::cout << "Enter account number: ";
+            std::cin >> accNum;
+            std::cout << "Enter name: ";
+            std::cin.ignore();  // To ignore the newline character left by std::cin
+            std::getline(std::cin, name);
+            std::cout << "Enter initial balance: ";
+            std::cin >> initialBalance;
+
+            if (accounts.find(accNum) == accounts.end()) {
+                accounts[accNum] = Account(accNum, name, initialBalance);
+                std::cout << "Account created successfully!" << std::endl;
+            } else {
+                std::cout << "Account number already exists." << std::endl;
+            }
+            break;
+        }
+        case 2: {
+            std::string accNum;
+            double amount;
+            std::cout << "Enter account number: ";
+            std::cin >> accNum;
+            if (accounts.find(accNum) != accounts.end()) {
+                std::cout << "Enter amount to deposit: ";
+                std::cin >> amount;
+                accounts[accNum].deposit(amount);
+            } else {
+                std::cout << "Account not found." << std::endl;
+            }
+            break;
+        }
