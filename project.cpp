@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <unordered_map>
+#include <limits>
 
 class Account {
 private:
@@ -9,6 +10,9 @@ private:
     double balance;
 
 public:
+    // Default constructor
+    Account() : accountNumber(""), name(""), balance(0.0) {}
+
     Account(std::string accNum, std::string accName, double initialBalance)
         : accountNumber(accNum), name(accName), balance(initialBalance) {}
 
@@ -35,6 +39,12 @@ public:
     }
 };
 
+// Clear the input buffer
+void clearInputBuffer() {
+    std::cin.clear();
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+}
+
 int main() {
     std::unordered_map<std::string, Account> accounts;
     int choice;
@@ -49,70 +59,79 @@ int main() {
         std::cout << "Enter your choice: ";
         std::cin >> choice;
 
- switch (choice) {
+        if (std::cin.fail()) {
+            std::cout << "Invalid input. Please enter a number." << std::endl;
+            clearInputBuffer();
+            continue;
+        }
+
+        switch (choice) {
             case 1: {
-            std::string accNum, name;
-            double initialBalance;
-            std::cout << "Enter account number: ";
-            std::cin >> accNum;
-            std::cout << "Enter name: ";
-            std::cin.ignore();  // To ignore the newline character left by std::cin
-            std::getline(std::cin, name);
-            std::cout << "Enter initial balance: ";
-            std::cin >> initialBalance;
+                std::string accNum, name;
+                double initialBalance;
+                std::cout << "Enter account number: ";
+                std::cin >> accNum;
+                std::cout << "Enter name: ";
+                clearInputBuffer();
+                std::getline(std::cin, name);
+                std::cout << "Enter initial balance: ";
+                std::cin >> initialBalance;
 
-            if (accounts.find(accNum) == accounts.end()) {
-                accounts[accNum] = Account(accNum, name, initialBalance);
-                std::cout << "Account created successfully!" << std::endl;
-            } else {
-                std::cout << "Account number already exists." << std::endl;
+                if (accounts.find(accNum) == accounts.end()) {
+                    accounts.emplace(accNum, Account(accNum, name, initialBalance));
+                    std::cout << "Account created successfully!" << std::endl;
+                } else {
+                    std::cout << "Account number already exists." << std::endl;
+                }
+                break;
             }
-            break;
-        }
-        case 2: {
-            std::string accNum;
-            double amount;
-            std::cout << "Enter account number: ";
-            std::cin >> accNum;
-            if (accounts.find(accNum) != accounts.end()) {
-                std::cout << "Enter amount to deposit: ";
-                std::cin >> amount;
-                accounts[accNum].deposit(amount);
-            } else {
-                std::cout << "Account not found." << std::endl;
+            case 2: {
+                std::string accNum;
+                double amount;
+                std::cout << "Enter account number: ";
+                std::cin >> accNum;
+                if (accounts.find(accNum) != accounts.end()) {
+                    std::cout << "Enter amount to deposit: ";
+                    std::cin >> amount;
+                    accounts[accNum].deposit(amount);
+                } else {
+                    std::cout << "Account not found." << std::endl;
+                }
+                break;
             }
-            break;
+            case 3: {
+                std::string accNum;
+                double amount;
+                std::cout << "Enter account number: ";
+                std::cin >> accNum;
+                if (accounts.find(accNum) != accounts.end()) {
+                    std::cout << "Enter amount to withdraw: ";
+                    std::cin >> amount;
+                    accounts[accNum].withdraw(amount);
+                } else {
+                    std::cout << "Account not found." << std::endl;
+                }
+                break;
+            }
+            case 4: {
+                std::string accNum;
+                std::cout << "Enter account number: ";
+                std::cin >> accNum;
+                if (accounts.find(accNum) != accounts.end()) {
+                    std::cout << "Account balance: " << accounts[accNum].getBalance() << std::endl;
+                } else {
+                    std::cout << "Account not found." << std::endl;
+                }
+                break;
+            }
+            case 5:
+                std::cout << "Exiting..." << std::endl;
+                break;
+            default:
+                std::cout << "Invalid choice. Please try again." << std::endl;
+                break;
         }
-        case 1: {
-            std::string accNum, name;
-            double initialBalance;
-            std::cout << "Enter account number: ";
-            std::cin >> accNum;
-            std::cout << "Enter name: ";
-            std::cin.ignore();  // To ignore the newline character left by std::cin
-            std::getline(std::cin, name);
-            std::cout << "Enter initial balance: ";
-            std::cin >> initialBalance;
+    } while (choice != 5);
 
-            if (accounts.find(accNum) == accounts.end()) {
-                accounts[accNum] = Account(accNum, name, initialBalance);
-                std::cout << "Account created successfully!" << std::endl;
-            } else {
-                std::cout << "Account number already exists." << std::endl;
-            }
-            break;
-        }
-        case 2: {
-            std::string accNum;
-            double amount;
-            std::cout << "Enter account number: ";
-            std::cin >> accNum;
-            if (accounts.find(accNum) != accounts.end()) {
-                std::cout << "Enter amount to deposit: ";
-                std::cin >> amount;
-                accounts[accNum].deposit(amount);
-            } else {
-                std::cout << "Account not found." << std::endl;
-            }
-            break;
-        }
+    return 0;
+}
